@@ -15,3 +15,9 @@ expo install expo-contacts
 ```
 npm start
 ```
+
+# Test
+
+```
+npm test
+```

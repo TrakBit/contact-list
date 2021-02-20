@@ -1,6 +1,6 @@
 # Prerequisites
 
-Ensure you have expo installed on your device
+Ensure you have [expo](https://docs.expo.io/get-started/installation/) installed on your device
 
 # Setup
 

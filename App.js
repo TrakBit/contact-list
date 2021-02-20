@@ -5,6 +5,23 @@ import {Provider, Button, TextInput} from 'react-native-paper';
 import {requestPermissionsAsync, getContactsAsync} from 'expo-contacts';
 import {ContactListModal} from './components/contactListModal';
 
+export const getContacts = async () => {
+    const permission = await requestPermissionsAsync();
+    if (permission && permission.status === 'granted') {
+        const {data} = await getContactsAsync();
+        if (data.length > 0) {
+            return data.filter((contact) => {
+                const {imageAvailable, phoneNumbers} = contact;
+                return imageAvailable && phoneNumbers && phoneNumbers.length > 0;
+            });
+        } else {
+            return [];
+        }
+    } else {
+        return [];
+    }
+};
+
 export default function App() {
     const [contacts, setContacts] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -13,19 +30,10 @@ export default function App() {
     const showModal = () => setModalVisible(true);
     const hideModal = () => setModalVisible(false);
 
-    const getContacts = async () => {
-        const {status} = await requestPermissionsAsync();
-        if (status === 'granted') {
-            const {data} = await getContactsAsync();
-            if (data.length > 0) {
-                const contactsData = data.filter((contact) => {
-                    const {imageAvailable, phoneNumbers} = contact;
-                    return imageAvailable && phoneNumbers && phoneNumbers.length > 0;
-                });
-                setContacts(contactsData);
-                showModal();
-            }
-        }
+    const getContactsAction = async () => {
+        const contactsData = await getContacts();
+        setContacts(contactsData);
+        showModal();
     };
 
     const selectContact = (selectedContact) => {
@@ -37,10 +45,10 @@ export default function App() {
         <View style={styles.container}>
             <Provider>
                 <View style={styles.container}>
-                    <View style={{height: 10}}>
+                    <View style={styles.content}>
                         <Button
                             mode='contained'
-                            onPress={() => getContacts()}
+                            onPress={() => getContactsAction()}
                         >
                             Contacts
                         </Button>
@@ -70,5 +78,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    content: {
+        height: 10
     }
 });

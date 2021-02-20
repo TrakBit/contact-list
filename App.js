@@ -5,15 +5,18 @@ import {Provider, Button, TextInput} from 'react-native-paper';
 import {requestPermissionsAsync, getContactsAsync} from 'expo-contacts';
 import {ContactListModal} from './components/contactListModal';
 
+export const filterContacts = (data) =>
+    data.filter((contact) => {
+        const {imageAvailable, phoneNumbers} = contact;
+        return imageAvailable && phoneNumbers && phoneNumbers.length > 0;
+    });
+
 export const getContacts = async () => {
     const permission = await requestPermissionsAsync();
     if (permission && permission.status === 'granted') {
         const {data} = await getContactsAsync();
         if (data.length > 0) {
-            return data.filter((contact) => {
-                const {imageAvailable, phoneNumbers} = contact;
-                return imageAvailable && phoneNumbers && phoneNumbers.length > 0;
-            });
+            return filterContacts(data);
         } else {
             return [];
         }

@@ -13,5 +13,5 @@ expo install expo-contacts
 # Run
 
 ```
-yarn start
+npm start
 ```
